@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragment_login">
+
+    <fragment
+        android:id="@+id/fragment_home"
+        android:name="org.sopt.soptseminar.home.HomeFragment"
+        android:label="fragment_home2"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/fragment_login"
+        android:name="org.sopt.soptseminar.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_fragment_login_to_fragment_home"
+            app:destination="@id/fragment_home" />
+        <action
+            android:id="@+id/action_fragment_login_to_fragment_signup"
+            app:destination="@id/fragment_signup" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_signup"
+        android:name="org.sopt.soptseminar.signup.SignupFragment"
+        android:label="fragment_signup"
+        tools:layout="@layout/fragment_signup" >
+        <action
+            android:id="@+id/passArgs_signup_to_login"
+            app:destination="@id/fragment_login"
+            app:launchSingleTop="true"/>
+    </fragment>
+
+</navigation>
