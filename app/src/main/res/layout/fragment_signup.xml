@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
-        android:text="GitHub Sign Up"
+        android:text="@string/github_signup"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +45,7 @@
             android:id="@+id/et_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="이름"
+            android:hint="@string/name"
             android:text="@={viewModel.name}"
             android:textSize="15sp" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -66,7 +66,7 @@
             android:id="@+id/et_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="아이디"
+            android:hint="@string/id"
             android:text="@={viewModel.id}"
             android:textSize="15sp" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -85,21 +85,30 @@
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="비밀번호"
+            android:hint="@string/pw"
             android:text="@={viewModel.password}"
             android:textSize="15sp"
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/btn_signup"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="회원가입"
-        android:layout_marginTop="70dp"
-        app:layout_constraintEnd_toEndOf="@+id/ti_password"
-        app:layout_constraintStart_toStartOf="@+id/ti_password"
-        app:layout_constraintTop_toBottomOf="@+id/ti_password" />
+        <Button
+            android:id="@+id/btn_signup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:text="@string/register"
+            app:layout_constraintEnd_toEndOf="@+id/ti_password"
+            app:layout_constraintStart_toStartOf="@+id/ti_password"
+            app:layout_constraintTop_toBottomOf="@+id/ti_password" />
 
+        <TextView
+            android:id="@+id/tv_memberTest"
+            android:text="회원정보 -> "
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/btn_signup"
+            app:layout_constraintStart_toStartOf="@+id/btn_signup"
+            app:layout_constraintTop_toBottomOf="@+id/btn_signup" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

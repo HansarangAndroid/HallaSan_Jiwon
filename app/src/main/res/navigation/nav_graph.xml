@@ -9,7 +9,11 @@
         android:id="@+id/fragment_home"
         android:name="org.sopt.soptseminar.home.HomeFragment"
         android:label="fragment_home2"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_fragment_home_to_fragment_repository"
+            app:destination="@id/fragment_repository" />
+    </fragment>
     <fragment
         android:id="@+id/fragment_login"
         android:name="org.sopt.soptseminar.login.LoginFragment"
@@ -32,5 +36,10 @@
             app:destination="@id/fragment_login"
             app:launchSingleTop="true"/>
     </fragment>
+    <fragment
+        android:id="@+id/fragment_repository"
+        android:name="org.sopt.soptseminar.gitRepos.RepoFragment"
+        android:label="fragment_repository"
+        tools:layout="@layout/fragment_repository" />
 
 </navigation>
