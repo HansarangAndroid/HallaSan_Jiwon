@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,8 +19,10 @@ import io.reactivex.schedulers.Schedulers
 import org.sopt.soptseminar.R
 import org.sopt.soptseminar.data.githubApi.GithubClient
 import org.sopt.soptseminar.databinding.FragmentHomeBinding
+import org.sopt.soptseminar.util.ItemStartDragListener
+import org.sopt.soptseminar.util.ItemTouchHelperCallback
 
-class HomeFragment : Fragment(){
+class HomeFragment : Fragment(), ItemStartDragListener {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding?: error("View를 참조하기 위해 binding이 초기화되지 않았습니다.")
     private val viewModel : HomeViewModel by viewModels() //위임초기화
@@ -27,6 +30,9 @@ class HomeFragment : Fragment(){
     private lateinit var mLayoutManager:RecyclerView.LayoutManager
 
     private var userInfoList = mutableListOf<UserInfo>()
+
+    private lateinit var itemTouchHelper : ItemTouchHelper
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +42,7 @@ class HomeFragment : Fragment(){
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
         return binding.root
     }
 
@@ -43,8 +50,11 @@ class HomeFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
         //TODO
         //어댑터 설정
-        userInfoAdapter = UserInfoAdapter()
+        userInfoAdapter = UserInfoAdapter(this)
         binding.rcUserInfo.adapter = userInfoAdapter
+
+        itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(userInfoAdapter))
+        itemTouchHelper.attachToRecyclerView(binding.rcUserInfo)
 
         //Login -> Home으로 ID 이동
         getSafeArgs()
@@ -107,17 +117,8 @@ class HomeFragment : Fragment(){
         super.onDestroyView()
         _binding = null //뷰가 죽었을 때 참조 삭제
     }
-}
 
-/*
-fun getUserGit()  {
-                GithubClient.getApi().getUsers("Jionee")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({items ->
-                        println(items)
-                        //items.forEach{println(it)}
-                    },{e ->
-                        println(e.toString())
-                    })
-            }*/
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
+        itemTouchHelper.startDrag(viewHolder)
+    }
+}

@@ -21,7 +21,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application){
 
     fun isLogin(id:String,pw:String): Int {
         //SignUpViewModel에서 사용한 repository와 다른 repository.
-        //application주입 때문인가 싶어서 MyApplication 클래스 만들어서 주입했지만 여전히 다름
+        //application주입 때문인가 싶어서 MyApplication 클래스 만들어서 주입했지만 여전히 다름 뭐지?!
         val member = repository.findById(id)
         Log.d("TESTLOGIN",member.toString())
         if (member != null) {

@@ -47,12 +47,12 @@ class LoginFragment : Fragment() {
                 toast("아이디, 패스워드를 모두 입력해주세요");
             }
                 //TODO : repository 문제 해결하면 주석 풀기
-//            else if(viewModel.isLogin(binding.etId.text.toString(), binding.etPassword.text.toString()) == 1){
-//                toast("아이디 혹은 패스워드가 올바르지 않습니다.")
-//            }
-//            else if(viewModel.isLogin(binding.etId.text.toString(), binding.etPassword.text.toString()) == 2){
-//                toast("존재하지 않는 아이디입니다.")
-//            }
+            else if(viewModel.isLogin(binding.etId.text.toString(), binding.etPassword.text.toString()) == 1){
+                toast("아이디 혹은 패스워드가 올바르지 않습니다.")
+            }
+            else if(viewModel.isLogin(binding.etId.text.toString(), binding.etPassword.text.toString()) == 2){
+                toast("존재하지 않는 아이디입니다.")
+            }
             else{
                 toast("로그인 성공")
                 val bundle = Bundle()

@@ -15,6 +15,5 @@ class GithubClient {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create()) .build()
             .create(GithubService::class.java)
-
     }
 }

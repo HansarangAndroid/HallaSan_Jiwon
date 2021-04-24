@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,15 +18,19 @@ import org.sopt.soptseminar.data.githubApi.GithubClient
 import org.sopt.soptseminar.databinding.FragmentRepositoryBinding
 import org.sopt.soptseminar.home.UserInfo
 import org.sopt.soptseminar.home.UserInfoAdapter
+import org.sopt.soptseminar.util.ItemStartDragListener
+import org.sopt.soptseminar.util.ItemTouchHelperCallback
 
-class RepoFragment : Fragment() {
+class RepoFragment : Fragment() , ItemStartDragListener {
     private var _binding:FragmentRepositoryBinding?=null
     private val binding get() = _binding?:error("View를 참조하기 위해 binding이 초기화되지 않았습니다.")
     private val viewModel : RepoViewModel by viewModels()
     private lateinit var repoAdapter: RepoInfoAdapter
     private lateinit var mLayoutManager:RecyclerView.LayoutManager
+
     private var repoInfoList = mutableListOf<RepoInfo>()
 
+    private lateinit var itemTouchHelper : ItemTouchHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,8 +45,11 @@ class RepoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        repoAdapter = RepoInfoAdapter()
+        repoAdapter = RepoInfoAdapter(this)
         binding.rcRepoInfo.adapter = repoAdapter
+
+        itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(repoAdapter))
+        itemTouchHelper.attachToRecyclerView(binding.rcRepoInfo)
 
         //Home -> Repo로 이동
         getSafeArgs()
@@ -88,5 +96,9 @@ class RepoFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null //뷰가 죽었을 때 참조 삭제
+    }
+
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
+        itemTouchHelper.startDrag(viewHolder)
     }
 }

@@ -2,11 +2,14 @@ package org.sopt.soptseminar.home
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.sopt.soptseminar.databinding.ItemInfoBinding
+import org.sopt.soptseminar.util.ItemStartDragListener
+import org.sopt.soptseminar.util.ItemTouchHelperListener
 
-class UserInfoAdapter : RecyclerView.Adapter<UserInfoAdapter.UserViewHolder>(){
+class UserInfoAdapter(private val listener : ItemStartDragListener) : RecyclerView.Adapter<UserInfoAdapter.UserViewHolder>(), ItemTouchHelperListener {
 
     val userList = mutableListOf<UserInfo>()
 
@@ -19,7 +22,7 @@ class UserInfoAdapter : RecyclerView.Adapter<UserInfoAdapter.UserViewHolder>(){
             parent,
             false
         )
-        return UserViewHolder(binding)
+        return UserViewHolder(binding,listener)
     }
 
     override fun getItemCount(): Int  = userList.size
@@ -31,11 +34,31 @@ class UserInfoAdapter : RecyclerView.Adapter<UserInfoAdapter.UserViewHolder>(){
 
     //개별 뷰(가장 작은 단위)를 사용할 것이라고 알려줌
     class UserViewHolder(
-        private val binding: ItemInfoBinding
+        private val binding: ItemInfoBinding,
+        listener : ItemStartDragListener
     ): RecyclerView.ViewHolder(binding.root){
+        init{
+            binding.clUser.setOnLongClickListener {
+                listener.onStartDrag(this)
+                return@setOnLongClickListener true
+            }
+        }
         fun onBind(userInfo: UserInfo){
             binding.tvTitle.text = userInfo.title
             binding.tvContent.text = userInfo.content
         }
     }
+
+    override fun onItemMoved(from: Int, to: Int) {
+        println("called onItemMoved")
+        val fromItem = userList.removeAt(from)
+        userList.add(to, fromItem)
+        notifyItemMoved(from, to)
+    }
+
+    override fun onItemSwiped(position: Int) {
+        userList.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
 }
