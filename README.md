@@ -1,6 +1,8 @@
 # Second Assignment
 <p align="center">
-<img src ="https://user-images.githubusercontent.com/49470328/114176250-dba24400-9975-11eb-8ab2-6a427c7a3bb1.gif" width = 25%>      <img src ="https://user-images.githubusercontent.com/49470328/114176272-e230bb80-9975-11eb-9c81-68708095de82.gif" width = 25%>
+<img src ="https://user-images.githubusercontent.com/49470328/115997204-49f53080-a61d-11eb-9356-51b06f6dc83e.gif" width = 25%>      
+<img src ="https://user-images.githubusercontent.com/49470328/115997193-3fd33200-a61d-11eb-9316-46293b9fb32c.gif" width = 25%>    
+<img src ="https://user-images.githubusercontent.com/49470328/115997199-43ff4f80-a61d-11eb-977c-adaa07b77152.gif" width = 25%>
 </p>
 
 # MVVM패턴
@@ -25,13 +27,64 @@ SignUp을 통해 등록한 회원 정보를 Database에 저장하여 회원 정�
 
 + 아이템을 옆으로 슬라이드하여 삭제하고, 위아래로 슬라이드하여 순서를 변경하는 기능을 추가하였습니다. 
 
-#LayoutManager
+# LayoutManager
 LinearLayoutManager와 GridLayoutManager를 이용하여 레이아웃을 바꿀 수 있도록 하였습니다. 
 
-# notifyDataSetChanged 대신 
+# notifyDataSetChanged
+notifyDataSetChanged는 어떤 아이템이 변경되면 list에 존재하는 모든 아이템들을 변경하는 action을 하는 아이입니다. 
+하지만 이것은 속도 저하를 일으키게 되어 diffutil 이라는 것이 등장했습니다. diffutil은 변하는 아이템만 비교하는 class를 만들어 변경이 발생한 것만 업데이트 하도록 하는 친구입니다. (마치 깃의 version control같은 느낌)
+하지만 여전히 비교 연산에 대한 처리가 필요하여 부담이 존재하므로 등장한 것이 listAdapter입니다. listAdpater는 비동기 클래스로 기존에 사용하던 adapter대신 사용하면 됩니다. 
 
+```
+class PlaceRecyclerAdapter : ListAdapter<Place, PlaceViewHolder>(PlaceDiffUtilCallback()) {
+
+    override fun onBindViewHolder(holder: PlaceViewHolder, position: Int) =
+        holder.bind(getItem(position))
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PlaceViewHolder(
+        ItemPlaceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    )
+}
+```
+```
+val placeAdapter = PlaceRecyclerAdapter()
+placeAdapter.submitList(newItems) // 아이템 업데이트
+```
+# gitHubApi
+![image](https://user-images.githubusercontent.com/49470328/115997367-d0117700-a61d-11eb-9456-f56c80e4191c.png)
+
+* githubRepo
+```
+data class GithubRepo (
+    @SerializedName("name") val name:String,
+    @SerializedName("language") val language:String,
+    @SerializedName("created_at") val date_created:String,
+    @SerializedName("html_url") val url:String
+)
+```
+* getRepoGit
+```
+@SuppressLint("CheckResult")
+    fun getRepoGit(owner:String)  {
+        GithubClient.getApi().getRepos(owner)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({items ->
+                repoInfoList.clear()
+                items.forEach{
+                    repoInfoList.add(RepoInfo(it.name,it.language,it.date_created,it.url))
+                    println(it)
+                }
+                repoAdapter.repoList.clear() //초기화
+                repoAdapter.repoList.addAll(repoInfoList)
+                repoAdapter.notifyDataSetChanged()
+            },{e ->
+                println(e.toString())
+            })
+    }
+```
 
 # 느낀점
-Navigation, MVVM패턴, Bundle등 처음 보는 개념이 많아 공부할 것이 많았던 시간이었습니다.   
-아직 개념이 완전치 않아 많은 공부와 연습이 필요할 것 같습니다.    
-메모리 릭 현상등에 대해서도 더 많은 신경을 쓰며 코드를 작성하고 싶습니다.   
+기존에 UI단에만 구현해 놓았던 MVVM패턴을 database단까지 확장시켜보았습니다. 처음 접하고 경험해보는 부분이라 힘들었는데 한 번 해보니 어느정도 감이 잡히는 것 같습니다.   
+RecyclerView에 대해 좀 더 깊이 알아갈 수 있었던 시간이었습니다. 아이템을 상하좌우로 움직이는 애니메이션을 처음 사용해보아서 신기했고 더 많은 기능들을 찾아봐야겠다고 생각했습니다. 
+또한 Github Api를 이용하여 정보를 받아왔는데, 다른 API들도 사용하여 다양한 정보들을 이용 해보고 싶습니다. 
