@@ -8,48 +8,68 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import org.sopt.soptseminar.R
+import org.sopt.soptseminar.data.member.Member
 import org.sopt.soptseminar.databinding.FragmentSignupBinding
 
 class SignupFragment : Fragment(){
-    private lateinit var binding: FragmentSignupBinding
-    private lateinit var viewModel : SignUpViewModel
+    private var _binding: FragmentSignupBinding? = null
+    private val binding get() = _binding?: error("View를 참조하기 위해 binding이 초기화되지 않았습니다.")
+    private val viewModel : SignUpViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSignupBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this)[SignUpViewModel::class.java]
+        _binding = FragmentSignupBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?){
         super.onViewCreated(view, savedInstanceState)
-        //TODO
         signup()
+        updateMemberList() //test
     }
 
     private fun signup(){
-        binding.buttonSignup.setOnClickListener {
+        binding.btnSignup.setOnClickListener {
             if(viewModel.checkInputText()){
                 Toast.makeText(requireContext(), "모든 정보를 입력해주세요!", Toast.LENGTH_SHORT).show()
             }
+            else if(viewModel.isDuplicate(binding.etId.text.toString())){
+                Toast.makeText(requireContext(), "중복된 아이디입니다.", Toast.LENGTH_SHORT).show()
+            }
             else{
+                //정보 저장
+                val member = Member(null,binding.etName.text.toString(),binding.etId.text.toString(),binding.etPassword.text.toString())
+                viewModel.insert(member)
+
                 val bundle = Bundle()
-                bundle.putString("NAME",binding.EditTextName.text.toString())
-                bundle.putString("ID",binding.EditTextId.text.toString())
-                bundle.putString("PASSWORD",binding.EditTextPassword.text.toString())
+                bundle.putString("NAME",binding.etName.text.toString())
+                bundle.putString("ID",binding.etId.text.toString())
+                bundle.putString("PASSWORD",binding.etPassword.text.toString())
 
                 Navigation.findNavController(binding.root).navigate(R.id.passArgs_signup_to_login,bundle)
             }
         }
+    }
+
+    private fun updateMemberList(){
+        viewModel.getAll().observe(viewLifecycleOwner, Observer{
+            binding.tvMemberTest.text = it.toString()
+        })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null //뷰가 죽었을 때 참조 삭제
     }
 }

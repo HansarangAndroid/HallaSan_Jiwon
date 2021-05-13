@@ -15,11 +15,11 @@
     tools:context=".signup.SignupFragment">
 
     <TextView
-        android:id="@+id/textview_login"
+        android:id="@+id/tv_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
-        android:text="GitHub Sign Up"
+        android:text="@string/github_signup"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +28,7 @@
         app:layout_constraintVertical_bias="0.15" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInput_name"
+        android:id="@+id/ti_name"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -38,20 +38,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_login"
+        app:layout_constraintTop_toBottomOf="@+id/tv_login"
         app:layout_constraintVertical_bias="0.2">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/EditText_name"
+            android:id="@+id/et_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="이름"
+            android:hint="@string/name"
             android:text="@={viewModel.name}"
             android:textSize="15sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInput_id"
+        android:id="@+id/ti_id"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -60,46 +60,55 @@
         android:layout_marginTop="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInput_name">
+        app:layout_constraintTop_toBottomOf="@+id/ti_name">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/EditText_id"
+            android:id="@+id/et_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="아이디"
+            android:hint="@string/id"
             android:text="@={viewModel.id}"
             android:textSize="15sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInput_password"
+        android:id="@+id/ti_password"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/textInput_id"
-        app:layout_constraintStart_toStartOf="@+id/textInput_id"
-        app:layout_constraintTop_toBottomOf="@+id/textInput_id"
+        app:layout_constraintEnd_toEndOf="@+id/ti_id"
+        app:layout_constraintStart_toStartOf="@+id/ti_id"
+        app:layout_constraintTop_toBottomOf="@+id/ti_id"
         android:layout_marginTop="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/EditText_password"
+            android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="비밀번호"
+            android:hint="@string/pw"
             android:text="@={viewModel.password}"
             android:textSize="15sp"
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/button_signup"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="회원가입"
-        android:layout_marginTop="70dp"
-        app:layout_constraintEnd_toEndOf="@+id/textInput_password"
-        app:layout_constraintStart_toStartOf="@+id/textInput_password"
-        app:layout_constraintTop_toBottomOf="@+id/textInput_password" />
+        <Button
+            android:id="@+id/btn_signup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:text="@string/register"
+            app:layout_constraintEnd_toEndOf="@+id/ti_password"
+            app:layout_constraintStart_toStartOf="@+id/ti_password"
+            app:layout_constraintTop_toBottomOf="@+id/ti_password" />
 
+        <TextView
+            android:id="@+id/tv_memberTest"
+            android:text="회원정보 -> "
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/btn_signup"
+            app:layout_constraintStart_toStartOf="@+id/btn_signup"
+            app:layout_constraintTop_toBottomOf="@+id/btn_signup" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
