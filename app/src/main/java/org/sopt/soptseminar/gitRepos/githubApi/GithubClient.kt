@@ -1,4 +1,4 @@
-package org.sopt.soptseminar.data.githubApi
+package org.sopt.soptseminar.gitRepos.githubApi
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

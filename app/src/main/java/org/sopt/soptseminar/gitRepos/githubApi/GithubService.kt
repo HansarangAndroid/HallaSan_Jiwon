@@ -1,4 +1,4 @@
-package org.sopt.soptseminar.data.githubApi
+package org.sopt.soptseminar.gitRepos.githubApi
 
 import io.reactivex.Single
 import retrofit2.http.GET

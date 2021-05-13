@@ -9,12 +9,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.sopt.soptseminar.R
-import org.sopt.soptseminar.data.githubApi.GithubClient
+import org.sopt.soptseminar.gitRepos.githubApi.GithubClient
 import org.sopt.soptseminar.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
@@ -46,7 +47,22 @@ class LoginFragment : Fragment() {
             if(viewModel.checkInputText()){
                 toast("아이디, 패스워드를 모두 입력해주세요");
             }
-                //TODO : repository 문제 해결하면 주석 풀기
+            else{
+                viewModel.doLogin()
+                viewModel.loginSuccess.observe(viewLifecycleOwner){success ->
+                    Log.d("Test","loginFragment > login"+success)
+                    if(success){
+                        toast("Login Success! Id : "+binding.etId.text.toString())
+                        val bundle = Bundle()
+                        bundle.putString("ID",binding.etId.text.toString())
+                        Navigation.findNavController(binding.root).navigate(R.id.action_fragment_login_to_fragment_home,bundle)
+                    }
+                    else{
+                        toast("Please check email or password")
+                    }
+                }
+            }
+            /*    //TODO : repository 문제 해결하면 주석 풀기
             else if(viewModel.isLogin(binding.etId.text.toString(), binding.etPassword.text.toString()) == 1){
                 toast("아이디 혹은 패스워드가 올바르지 않습니다.")
             }
@@ -58,7 +74,7 @@ class LoginFragment : Fragment() {
                 val bundle = Bundle()
                 bundle.putString("ID",binding.etId.text.toString())
                 Navigation.findNavController(binding.root).navigate(R.id.action_fragment_login_to_fragment_home,bundle)
-            }
+            }*/
         }
     }
 

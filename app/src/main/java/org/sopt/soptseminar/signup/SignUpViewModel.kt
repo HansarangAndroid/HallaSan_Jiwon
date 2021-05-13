@@ -7,7 +7,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import org.sopt.soptseminar.data.member.Member
 import org.sopt.soptseminar.data.member.MemberRepository
+import org.sopt.soptseminar.login.loginApi.*
 import org.sopt.soptseminar.util.MyApplication
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SignUpViewModel(application: Application) : AndroidViewModel(application){
     private val repository = MemberRepository(MyApplication.ApplicationContext() as Application) //activity의 생명주기가 아닌 application의 생명주기를 따르도록 함
@@ -16,6 +20,10 @@ class SignUpViewModel(application: Application) : AndroidViewModel(application){
     val name = MutableLiveData<String>()
     val id = MutableLiveData<String>()
     val password = MutableLiveData<String>()
+
+    private val _signupSuccess = MutableLiveData<Boolean>()
+    val signupSuccess: LiveData<Boolean>
+        get() = _signupSuccess
 
     fun checkInputText():Boolean{
         Log.d("SignupViewModelTest",name.value.toString()+"      "+id.value.toString()+"      "+password.value.toString())
@@ -38,5 +46,32 @@ class SignUpViewModel(application: Application) : AndroidViewModel(application){
     fun isDuplicate(userId:String) :Boolean{
         Log.d("TESTDUP",repository.findById(userId).toString())
         return repository.findById(userId) != null //duplicate -> true
+    }
+
+    fun doSignup(){
+        val requestSignupData = RequestSignupData(
+            email = id.value.toString(),
+            password = password.value.toString(),
+            birth = "2000-01-01",
+            sex = "0",
+            nickname = "test",
+            phone = "010-0000-0000"
+        )
+
+        val call: Call<ResponseSignupData> = SignupClient.signupService
+            .postSignup(requestSignupData)
+
+        call.enqueue(object : Callback<ResponseSignupData> {
+            override fun onResponse(
+                call: Call<ResponseSignupData>,
+                response: Response<ResponseSignupData>
+            ){
+                _signupSuccess.value = response.isSuccessful
+            }
+
+            override fun onFailure(call: Call<ResponseSignupData>, t: Throwable) {
+                Log.d("NetworkTest","error:$t")
+            }
+        })
     }
 }

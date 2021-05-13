@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.sopt.soptseminar.data.githubApi.GithubClient
+import org.sopt.soptseminar.gitRepos.githubApi.GithubClient
 import org.sopt.soptseminar.databinding.FragmentRepositoryBinding
 import org.sopt.soptseminar.home.UserInfo
 import org.sopt.soptseminar.home.UserInfoAdapter

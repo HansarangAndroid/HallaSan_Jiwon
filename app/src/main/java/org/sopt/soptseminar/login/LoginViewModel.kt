@@ -3,16 +3,27 @@ package org.sopt.soptseminar.login
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import org.sopt.soptseminar.login.loginApi.SignupClient
+import org.sopt.soptseminar.login.loginApi.RequestLoginData
+import org.sopt.soptseminar.login.loginApi.ResponseLoginData
 import org.sopt.soptseminar.data.member.MemberRepository
+import org.sopt.soptseminar.login.loginApi.LoginClient
 import org.sopt.soptseminar.util.MyApplication
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginViewModel(application: Application) : AndroidViewModel(application){
     private val repository = MemberRepository(MyApplication.ApplicationContext() as Application)
 
     val id = MutableLiveData<String>()
     val password = MutableLiveData<String>()
+
+    private val _loginSuccess = MutableLiveData<Boolean>()
+    val loginSuccess: LiveData<Boolean>
+        get() = _loginSuccess
 
     fun checkInputText():Boolean{
         Log.d("LoginViewModelTest",id.value.toString()+"      "+password.value.toString())
@@ -29,5 +40,28 @@ class LoginViewModel(application: Application) : AndroidViewModel(application){
                 return 1//wrond PW
         }
         return 2 //No ID
+    }
+
+    fun doLogin(){
+        val requestLoginData = RequestLoginData(
+            email = id.value.toString(),
+            password = password.value.toString()
+        )
+
+        val call: Call<ResponseLoginData> = LoginClient.loginService
+            .postLogin(requestLoginData)
+
+        call.enqueue(object : Callback<ResponseLoginData> {
+            override fun onResponse(
+                call: Call<ResponseLoginData>,
+                response: Response<ResponseLoginData>
+            ){
+                _loginSuccess.value = response.isSuccessful
+            }
+
+            override fun onFailure(call: Call<ResponseLoginData>, t: Throwable) {
+                Log.d("NetworkTest","error:$t")
+            }
+        })
     }
 }
