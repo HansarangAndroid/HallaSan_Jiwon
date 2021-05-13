@@ -85,7 +85,7 @@ class HomeFragment : Fragment(), ItemStartDragListener {
 
     @SuppressLint("CheckResult")
     fun getUserGit(userId: String)  {
-        GithubClient.getApi().getUsers(userId)
+        GithubClient.getApi.getUsers(userId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({items ->

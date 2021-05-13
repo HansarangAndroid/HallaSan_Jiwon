@@ -70,7 +70,7 @@ class RepoFragment : Fragment() , ItemStartDragListener {
 
     @SuppressLint("CheckResult")
     fun getRepoGit(owner:String)  {
-        GithubClient.getApi().getRepos(owner)
+        GithubClient.getApi.getRepos(owner)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({items ->
