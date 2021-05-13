@@ -1,6 +1,8 @@
-# First Assignment
+# Second Assignment
 <p align="center">
-<img src ="https://user-images.githubusercontent.com/49470328/114176250-dba24400-9975-11eb-8ab2-6a427c7a3bb1.gif" width = 25%>      <img src ="https://user-images.githubusercontent.com/49470328/114176272-e230bb80-9975-11eb-9c81-68708095de82.gif" width = 25%>
+<img src ="https://user-images.githubusercontent.com/49470328/115997204-49f53080-a61d-11eb-9356-51b06f6dc83e.gif" width = 25%>      
+<img src ="https://user-images.githubusercontent.com/49470328/115997193-3fd33200-a61d-11eb-9316-46293b9fb32c.gif" width = 25%>    
+<img src ="https://user-images.githubusercontent.com/49470328/115997199-43ff4f80-a61d-11eb-977c-adaa07b77152.gif" width = 25%>
 </p>
 
 # MVVM패턴
@@ -15,92 +17,74 @@ View - ViewModel - Model로 이루어진 MVVM패턴을 사용했습니다.
 : 데이터를 다루는 곳으로 데이터를 저장하거나, 서버로부터 받은 데이터를 저장합니다.    
 : 데이터 변경 시 ViewModel에게 변경 알림을 전송합니다. 
 
-* 이번 과제에서는 DB를 만들 필요가 없다고 느껴 Model(Entity, Room, Repository)를 만들지 않았고, loginFragment와 SignUpFragment의 각 ViewModel만 생성하였습니다.
-<p align="center">
-<img src ="https://user-images.githubusercontent.com/49470328/114177015-dc87a580-9976-11eb-8170-c567f5b6ef20.png" width = 40%>
-</p>
++ 이번 과제에서 Model(Entity,Room, Repository)를 추가로 작성하였습니다.
+SignUp을 통해 등록한 회원 정보를 Database에 저장하여 회원 정보를 관리하고, Login시 저장된 회원 정보를 검사하여 로그인이 되도록 구현하였습니다.
+(하지만, SignUpViewmodel에서 사용한 repository와 LoginViewmodel에서 사용한 repository가 다른 문제가 발생하여 원인을 찾아보고 있습니다.)
 
-# 화면 구성
-안드로이드에서 제공하는 navigation 기능을 사용하여 fragment간 전환을 구현했습니다.
-Host 화면인 fragment_longin, 이후 전환되는 fragment_signup, fragment_home 으로 구성되어 있습니다.  
-<p align="center">
-<img src ="https://user-images.githubusercontent.com/49470328/114173918-d8f21f80-9972-11eb-9a04-5cd5bb14dd94.JPG" width = 40%>
-</p>
+# RecyclerView
+반복되는 view의 재활용을 위해 recyclerView를 사용합니다. 
+긴 내용의 경우 ...이 나오도록 속성을 사용하였고, '>repository' 버튼을 누르면 fragment_repository로 이동하도록 작성하였습니다.
 
-# Activity 생명주기
-본 과제에서 Log를 이용하여 Activity의 생명주기를 찍어봐야 하지만 MainActivity를 제외한 화면을 Fragment로 구현하여 개인적으로 공부했던 생명주기 그림을 첨부합니다.   
-<p align="center">
-<img src ="https://user-images.githubusercontent.com/49470328/114176714-81ee4980-9976-11eb-88e8-1d69c78a098e.png" width = 20%> <img src ="https://user-images.githubusercontent.com/49470328/114173868-c7a91300-9972-11eb-88c6-dc17907cd651.png" width = 70%>
-</p>
++ 아이템을 옆으로 슬라이드하여 삭제하고, 위아래로 슬라이드하여 순서를 변경하는 기능을 추가하였습니다. 
 
+# LayoutManager
+LinearLayoutManager와 GridLayoutManager를 이용하여 레이아웃을 바꿀 수 있도록 하였습니다. 
 
-# LoginFragment, LoginViewModel, fragment_login.xml
-1. 
+# notifyDataSetChanged
+notifyDataSetChanged는 어떤 아이템이 변경되면 list에 존재하는 모든 아이템들을 변경하는 action을 하는 아이입니다. 
+하지만 이것은 속도 저하를 일으키게 되어 diffutil 이라는 것이 등장했습니다. diffutil은 변하는 아이템만 비교하는 class를 만들어 변경이 발생한 것만 업데이트 하도록 하는 친구입니다. (마치 깃의 version control같은 느낌)
+하지만 여전히 비교 연산에 대한 처리가 필요하여 부담이 존재하므로 등장한 것이 listAdapter입니다. listAdpater는 비동기 클래스로 기존에 사용하던 adapter대신 사용하면 됩니다. 
+
 ```
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <data>
-        <variable
-            name="viewModel"
-            type="org.sopt.soptseminar.login.LoginViewModel" />
-    </data>
-    ...
-    기존 XML내용
-    ...
-</layout>
-```
-```
-<com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/EditText_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="아이디"
-            android:text="@={viewModel.id}"
-            android:textSize="15sp" />
-```
-위와 같은 바인딩을 이용하여 xml과 viewModel을 바인딩 해주었습니다. (viewModel에서 실시간 데이터 처리 가능)
+class PlaceRecyclerAdapter : ListAdapter<Place, PlaceViewHolder>(PlaceDiffUtilCallback()) {
 
-2. 아이디, 비밀번호 Null값 체크를 ViewModel에서 수행해주었습니다.
-```
-class LoginViewModel : ViewModel(){
-    val id = MutableLiveData<String>()
-    val password = MutableLiveData<String>()
+    override fun onBindViewHolder(holder: PlaceViewHolder, position: Int) =
+        holder.bind(getItem(position))
 
-    fun checkInputText():Boolean{
-        Log.d("LoginViewModelTest",id.value.toString()+"      "+password.value.toString())
-        return id.value.isNullOrEmpty() || password.value.isNullOrEmpty()
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PlaceViewHolder(
+        ItemPlaceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    )
 }
 ```
-
-3. Bundle을 이용하여 fragment간 정보 전달을 구현했습니다. (SignUpFragment > LoginFragment)
-Bundle값 수신
 ```
-private fun getSafeArgs(){
-        arguments?.let{
-            //viewModel.name.value = it.getString("NAME").toString()
-            viewModel.id.value = it.getString("ID").toString()
-            viewModel.password.value = it.getString("PASSWORD").toString()
-        }
+val placeAdapter = PlaceRecyclerAdapter()
+placeAdapter.submitList(newItems) // 아이템 업데이트
+```
+# gitHubApi
+![image](https://user-images.githubusercontent.com/49470328/115997367-d0117700-a61d-11eb-9456-f56c80e4191c.png)
+
+* githubRepo
+```
+data class GithubRepo (
+    @SerializedName("name") val name:String,
+    @SerializedName("language") val language:String,
+    @SerializedName("created_at") val date_created:String,
+    @SerializedName("html_url") val url:String
+)
+```
+* getRepoGit
+```
+@SuppressLint("CheckResult")
+    fun getRepoGit(owner:String)  {
+        GithubClient.getApi().getRepos(owner)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({items ->
+                repoInfoList.clear()
+                items.forEach{
+                    repoInfoList.add(RepoInfo(it.name,it.language,it.date_created,it.url))
+                    println(it)
+                }
+                repoAdapter.repoList.clear() //초기화
+                repoAdapter.repoList.addAll(repoInfoList)
+                repoAdapter.notifyDataSetChanged()
+            },{e ->
+                println(e.toString())
+            })
     }
-```
-
-# SignUpFragment, SignUpViewModel, fragment_signup.xml
-1. 기타 내용은 Login과 동일합니다.
-
-2. Bundle을 이용하여 fragment 값을 전송합니다. 
-```
- val bundle = Bundle()
-  bundle.putString("NAME",binding.EditTextName.text.toString())
-  bundle.putString("ID",binding.EditTextId.text.toString())
-  bundle.putString("PASSWORD",binding.EditTextPassword.text.toString())
-
-  Navigation.findNavController(binding.root).navigate(R.id.passArgs_signup_to_login,bundle)
 ```
 
 # 느낀점
-Navigation, MVVM패턴, Bundle등 처음 보는 개념이 많아 공부할 것이 많았던 시간이었습니다.   
-아직 개념이 완전치 않아 많은 공부와 연습이 필요할 것 같습니다.    
-메모리 릭 현상등에 대해서도 더 많은 신경을 쓰며 코드를 작성하고 싶습니다.   
+기존에 UI단에만 구현해 놓았던 MVVM패턴을 database단까지 확장시켜보았습니다. 처음 접하고 경험해보는 부분이라 힘들었는데 한 번 해보니 어느정도 감이 잡히는 것 같습니다.   
+RecyclerView에 대해 좀 더 깊이 알아갈 수 있었던 시간이었습니다. 아이템을 상하좌우로 움직이는 애니메이션을 처음 사용해보아서 신기했고 더 많은 기능들을 찾아봐야겠다고 생각했습니다. 
+또한 Github Api를 이용하여 정보를 받아왔는데, 다른 API들도 사용하여 다양한 정보들을 이용 해보고 싶습니다. 
