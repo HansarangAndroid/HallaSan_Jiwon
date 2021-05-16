@@ -43,11 +43,12 @@ class LoginViewModel(application: Application) : AndroidViewModel(application){
     }
 
     fun doLogin(){
+
         val requestLoginData = RequestLoginData(
             email = id.value.toString(),
             password = password.value.toString()
         )
-
+        Log.d("TEST_LOGINVIEWMODEL",requestLoginData.email+" "+requestLoginData.password)
         val call: Call<ResponseLoginData> = LoginClient.loginService
             .postLogin(requestLoginData)
 
@@ -56,6 +57,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application){
                 call: Call<ResponseLoginData>,
                 response: Response<ResponseLoginData>
             ){
+                Log.d("TEST_LOGINVIEWMODEL",response.isSuccessful.toString())
                 _loginSuccess.value = response.isSuccessful
             }
 
@@ -63,5 +65,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application){
                 Log.d("NetworkTest","error:$t")
             }
         })
+    }
+
+    fun setSuccessFalse(){
+        _loginSuccess.value = false
     }
 }

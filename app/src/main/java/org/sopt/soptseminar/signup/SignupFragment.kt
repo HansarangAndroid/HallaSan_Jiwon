@@ -31,6 +31,7 @@ class SignupFragment : Fragment(){
         _binding = FragmentSignupBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        observeSuccess()
         return binding.root
     }
 
@@ -50,20 +51,6 @@ class SignupFragment : Fragment(){
             }
             else{
                 viewModel.doSignup()
-                viewModel.signupSuccess.observe(viewLifecycleOwner){success ->
-                    Log.d("Test","signupFragment > signup"+success)
-                    if(success){
-                        toast("Signup Success! Let's Login")
-                        val bundle = Bundle()
-                        bundle.putString("NAME",binding.etName.text.toString())
-                        bundle.putString("ID",binding.etId.text.toString())
-                        bundle.putString("PASSWORD",binding.etPassword.text.toString())
-                        Navigation.findNavController(binding.root).navigate(R.id.passArgs_signup_to_login,bundle)
-                    }
-                    else{
-                        toast("Oops, Signup failed!")
-                    }
-                }
             }
             /*else{
                 //정보 저장
@@ -80,6 +67,22 @@ class SignupFragment : Fragment(){
         }
     }
 
+    private fun observeSuccess(){
+        viewModel.signupSuccess.observe(viewLifecycleOwner){success ->
+            Log.d("Test","signupFragment > signup"+success)
+            if(success){
+                toast("Signup Success! Let's Login")
+                val bundle = Bundle()
+                bundle.putString("NAME",binding.etName.text.toString())
+                bundle.putString("ID",binding.etId.text.toString())
+                bundle.putString("PASSWORD",binding.etPassword.text.toString())
+                Navigation.findNavController(binding.root).navigate(R.id.passArgs_signup_to_login,bundle)
+            }
+            else{
+                toast("Oops, Signup failed!")
+            }
+        }
+    }
     private fun updateMemberList(){
         viewModel.getAll().observe(viewLifecycleOwner, Observer{
             binding.tvMemberTest.text = it.toString()
