@@ -1,4 +1,4 @@
-package org.sopt.soptseminar.data.githubApi
+package org.sopt.soptseminar.gitRepos.githubApi
 
 import com.google.gson.annotations.SerializedName
 
